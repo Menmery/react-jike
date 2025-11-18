@@ -1,3 +1,4 @@
+import { request } from "@/utils"
 import { createSlice } from "@reduxjs/toolkit"
 
 const userStore = createSlice({
@@ -20,6 +21,14 @@ const { setToken } = userStore.actions
 // 获取reducer
 const userReducer = userStore.reducer
 
-export { setToken }
+// 异步方法 登录获取token
+const fetchLogin = (loginForm) => {
+  return async (dispatch) => {
+    const res = await request.post('/authorizations', loginForm)
+    dispatch(setToken(res.data.token))
+  }
+}
+
+export { setToken, fetchLogin }
 
 export default userReducer

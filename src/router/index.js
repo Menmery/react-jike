@@ -1,5 +1,5 @@
-import Layout from '../pages/Layout/index'
-import Login from '../pages/Login/index'
+import Layout from '@/pages/Layout/index'
+import Login from '@/pages/Login/index'
 
 import { createBrowserRouter } from 'react-router-dom'
 

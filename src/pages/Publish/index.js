@@ -11,12 +11,12 @@ import {
   message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import './index.scss'
 import ReactQuill from 'react-quill'
 import 'react-quill/dist/quill.snow.css'
-import { useState } from 'react'
-import { createArticleAPI } from '@/apis/articles'
+import { useEffect, useState } from 'react'
+import { createArticleAPI, getArticleByIdAPI } from '@/apis/articles'
 import { useChannel } from '@/hooks/useChannel'
 
 const { Option } = Select
@@ -57,6 +57,18 @@ const Publish = () => {
   const onTypeChange = (e) => {
     setImageType(e.target.value)
   }
+
+  // 数据回填
+  const [searchParams] = useSearchParams()
+  const articleId = searchParams.get('id')
+  const [form] = Form.useForm()
+  useEffect(() => {
+    async function getArticleDetail() {
+      const res = await getArticleByIdAPI(articleId)
+      form.setFieldsValue(res.data)
+    }
+    getArticleDetail()
+  }, [articleId, form])
   return (
     <div className="publish">
       <Card
@@ -73,6 +85,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ type: imageType }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item
             label="标题"

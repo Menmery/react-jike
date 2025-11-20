@@ -33,3 +33,10 @@ export const deleteArticleAPI = (id) => {
     method: 'DELETE'
   })
 }
+
+// 数据回填 获取文章详情
+export const getArticleByIdAPI = (id) => {
+  return request({
+    url: `/mp/articles/${id}`
+  })
+}

@@ -43,6 +43,7 @@ const Publish = () => {
       channel_id
     }
     createArticleAPI(reqData)
+    message.success('发布成功')
   }
 
   // 图片上传回调

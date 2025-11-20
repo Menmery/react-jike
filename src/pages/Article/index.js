@@ -89,17 +89,47 @@ const Article = () => {
     }
   ]
 
+  // 请求参数
+  const [reqData, setReqData] = useState({
+    status: '',
+    channel_id: '',
+    begin_pubdate: '',
+    end_pubdate: '',
+    page: 1,
+    per_page: 4
+  })
+
   // 获取文章列表
   const [list, setList] = useState([])
   const [count, setCount] = useState(0)
   useEffect(() => {
     const getList = async () => {
-      const res = await getArticleListAPI()
+      const res = await getArticleListAPI(reqData)
       setList(res.data.results)
       setCount(res.data.total_count)
     }
     getList()
-  }, [])
+  }, [reqData])
+
+  // 筛选功能
+  // reqData发生变化 会触发useEffect重新请求数据 执行副作用函数
+  const onFinish = (formValue) => {
+    setReqData({
+      ...reqData,
+      channel_id: formValue.channel_id,
+      status: formValue.status,
+      begin_pubdate: formValue.date[0].format('YYYY-MM-DD'),
+      end_pubdate: formValue.date[1].format('YYYY-MM-DD'),
+    })
+  }
+
+  // 分页
+  const onPageChange = (page) => {
+    setReqData({
+      ...reqData,
+      page
+    })
+  }
   return (
     <div>
       <Card
@@ -111,7 +141,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: '' }}>
+        <Form onFinish={onFinish} initialValues={{ status: '' }}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={''}>全部</Radio>
@@ -123,7 +153,6 @@ const Article = () => {
           <Form.Item label="频道" name="channel_id">
             <Select
               placeholder="请选择文章频道"
-              defaultValue="lucy"
               style={{ width: 120 }}
             >
               {channelList.map((item) => {
@@ -147,7 +176,11 @@ const Article = () => {
         </Form>
       </Card>
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} />
+        <Table rowKey="id" columns={columns} dataSource={list} pagination={{
+          total: count,
+          pageSize: reqData.per_page,
+          onChange: onPageChange
+        }} />
       </Card>
     </div>
   )

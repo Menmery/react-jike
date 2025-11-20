@@ -7,7 +7,8 @@ import {
   Input,
   Upload,
   Space,
-  Select
+  Select,
+  message
 } from 'antd'
 import { PlusOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
@@ -33,14 +34,18 @@ const Publish = () => {
 
   // 提交数据
   const onFinish = (formValue) => {
+    // 检测图片数量
+    if (imageList.length !== imageType) {
+      return message.warning('请上传正确数量的图片')
+    }
     const { title, content, channel_id } = formValue
     // 处理表单数据
     const reqData = {
       title,
       content,
       cover: {
-        type: 0,
-        images: []
+        type: imageType,
+        images: imageList.map(item => item.response.data.url)
       },
       channel_id
     }

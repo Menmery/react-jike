@@ -5,7 +5,7 @@ import router from '@/router'
 
 const request = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0',
-  timeout: 5000
+  timeout: 1500000
 })
 
 // 添加请求拦截器
@@ -30,7 +30,7 @@ request.interceptors.response.use((response) => {
   // 对响应错误做点什么
 
   // token 失效
-  if (error.response.status === 401) {
+  if (error.response?.status === 401) {
     clearToken()
     router.navigate('/login')
     window.location.reload()

@@ -65,7 +65,17 @@ const Publish = () => {
   useEffect(() => {
     async function getArticleDetail() {
       const res = await getArticleByIdAPI(articleId)
-      form.setFieldsValue(res.data)
+      form.setFieldsValue({
+        ...res.data,
+        // 解决图片数量回填问题
+        type: res.data.cover.type
+      })
+      // 回填图片列表
+      setImageType(res.data.cover.type)
+      // 显示图片
+      setImageList(res.data.cover.images.map(url => {
+        return { url }
+      }))
     }
     getArticleDetail()
   }, [articleId, form])
@@ -122,6 +132,7 @@ const Publish = () => {
               name="image"
               onChange={onChange}
               maxCount={imageType}
+              fileList={imageList}
             >
               <div style={{ marginTop: 8 }}>
                 <PlusOutlined />
